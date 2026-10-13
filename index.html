@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Periodic Table — Interactive Quiz</title>
+<style>
+:root{--bg:#f3f7f8;--card:#fff;--ink:#18323a;--muted:#6c7c82;--accent:#087f70;--accent2:#e4f4f0;--line:#dce7e8;--wrong:#b42318;--right:#137547}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#edf5f6,#f8fafb);font-family:Arial,"Tahoma",sans-serif;color:var(--ink);line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px 48px}.hero{background:linear-gradient(120deg,#12384b,#078674);color:#fff;border-radius:22px;padding:28px 26px;margin-bottom:18px;box-shadow:0 12px 35px #12384b22}
+.eyebrow{font-size:.82rem;opacity:.85;letter-spacing:.08em;text-transform:uppercase}.hero h1{font-size:clamp(1.55rem,4vw,2.2rem);margin:7px 0}.hero p{margin:5px 0;color:#e1f4f0}
+.ar{display:block;direction:rtl;text-align:right;font-size:.83em;color:var(--muted);font-weight:400;margin-top:2px}.hero .ar{color:#d4e9e8}.topline{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:14px 2px}.progress{height:8px;background:#dce8e8;border-radius:20px;overflow:hidden;flex:1;min-width:140px}.bar{height:100%;width:0;background:var(--accent);transition:width .25s}.count{font-size:.9rem;color:var(--muted);white-space:nowrap}
+.question{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:14px 0;box-shadow:0 5px 18px #153b4410}.qnum{color:var(--accent);font-size:.8rem;font-weight:700;text-transform:uppercase}.question h2{font-size:1.1rem;line-height:1.45;margin:8px 0 16px}.options{display:grid;gap:9px}.option{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;cursor:pointer;transition:.15s;background:#fff}.option:hover{border-color:var(--accent);background:#f6fbfa}.option input{margin-top:5px;accent-color:var(--accent)}.option .txt{flex:1}.option .ar{font-size:.78rem}.option.correct{border-color:#54a980;background:#effaf3}.option.incorrect{border-color:#e28b84;background:#fff3f2}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:20px 0}.btn{border:0;border-radius:12px;padding:12px 18px;font-size:1rem;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#fff}.secondary{background:#e5eeee;color:var(--ink)}.btn:disabled{opacity:.45;cursor:not-allowed}.result{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:25px;margin-top:20px;text-align:center}.score{font-size:2.5rem;font-weight:800;color:var(--accent)}.note{color:var(--muted)}.small{font-size:.85rem}.footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:26px}
+@media(max-width:600px){.wrap{padding:14px 10px 30px}.hero{padding:22px 18px}.question{padding:17px}.actions .btn{flex:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Chem 101/121 · Practice Test</div>
+    <h1>History & Classification of the Periodic Table</h1>
+    <p>Student: <strong>كوكِي وليد الرفاعي</strong></p>
+    <p>15 multiple-choice questions · Choose one answer for each question.</p>
+    <span class="ar">اسم الطالب: كوكي وليد الرفاعي</span>
+    <span class="ar">تاريخ الجدول الدوري وتصنيف العناصر — ١٥ سؤال اختيار من متعدد. اختر إجابة واحدة لكل سؤال.</span>
+  </header>
+  <div class="topline"><div class="progress"><div class="bar" id="bar"></div></div><div class="count" id="count">0 / 15 answered</div></div>
+  <main id="quiz"></main>
+  <div class="actions"><button class="btn secondary" id="reset">Start again <span class="ar">ابدأ من جديد</span></button><button class="btn primary" id="submit">Submit answers <span class="ar">سلّم الإجابات</span></button></div>
+  <section class="result" id="result" aria-live="polite"></section>
+  <div class="footer">Prepared only from the provided first-section notes. <span class="ar" style="text-align:center">تم إعداد الاختبار اعتمادًا على ملاحظات القسم المرفق فقط.</span></div>
+</div>
+<script>
+const questions = [
+{q:"Around which year did scientists begin noticing that some elements had similar properties?",ar:"في حوالي أي سنة بدأ العلماء يلاحظون أن بعض العناصر لها خواص متشابهة؟",opts:[["Around 1800","حوالي سنة 1800"],["In 1915","في سنة 1915"],["In 1872","في سنة 1872"],["In 2000","في سنة 2000"]],a:0},
+{q:"Who arranged the known elements by properties and increasing atomic mass in 1872?",ar:"من الذي رتّب العناصر المعروفة حسب خواصها وتزايد كتلتها الذرية سنة 1872؟",opts:[["Moseley and Bohr","موزلي وبور"],["Mendeleev and Meyer","مندليف وماير"],["Dalton and Thomson","دالتون وطومسون"],["Rutherford and Chadwick","رذرفورد وتشادويك"]],a:1},
+{q:"According to the notes, the modern periodic table is arranged mainly by increasing:",ar:"طبقًا للملاحظات، يُرتَّب الجدول الدوري الحديث أساسًا حسب التزايد في:",opts:[["Atomic mass","الكتلة الذرية"],["Number of neutrons","عدد النيوترونات"],["Atomic number","العدد الذري"],["Number of shells only","عدد الأغلفة فقط"]],a:2},
+{q:"What is the atomic number?",ar:"ما المقصود بالعدد الذري؟",opts:[["Number of neutrons in the nucleus","عدد النيوترونات في النواة"],["Number of protons in the nucleus","عدد البروتونات في النواة"],["Total number of shells","العدد الكلي للأغلفة"],["Mass of one electron","كتلة إلكترون واحد"]],a:1},
+{q:"A horizontal row in the periodic table is called a:",ar:"يُسمّى الصف الأفقي في الجدول الدوري:",opts:[["Group","مجموعة"],["Block","قطاع"],["Period","دورة"],["Family only","عائلة فقط"]],a:2},
+{q:"A vertical column in the periodic table is called a:",ar:"يُسمّى العمود الرأسي في الجدول الدوري:",opts:[["Period","دورة"],["Group","مجموعة"],["Shell","غلاف"],["Orbital","أوربيتال"]],a:1},
+{q:"How many groups and periods are shown in the modern periodic table described in the notes?",ar:"كم عدد المجموعات والدورات في الجدول الدوري الحديث كما ورد في الملاحظات؟",opts:[["7 groups and 18 periods","٧ مجموعات و١٨ دورة"],["18 groups and 7 periods","١٨ مجموعة و٧ دورات"],["8 groups and 8 periods","٨ مجموعات و٨ دورات"],["18 groups and 8 periods","١٨ مجموعة و٨ دورات"]],a:1},
+{q:"Which information is normally found in an element's square?",ar:"أي معلومة توجد عادةً داخل مربع العنصر؟",opts:[["Atomic number, symbol, name, and atomic mass","العدد الذري والرمز والاسم والكتلة الذرية"],["Only the melting point","درجة الانصهار فقط"],["Only the number of neutrons","عدد النيوترونات فقط"],["The element's discovery story only","قصة اكتشاف العنصر فقط"]],a:0},
+{q:"In a neutral atom, the number of electrons equals the number of:",ar:"في الذرة المتعادلة، يساوي عدد الإلكترونات عدد:",opts:[["Neutrons","النيوترونات"],["Protons","البروتونات"],["Energy levels","مستويات الطاقة"],["Isotopes","النظائر"]],a:1},
+{q:"Which set contains only examples of metalloids listed in the notes?",ar:"أي مجموعة تحتوي فقط على أمثلة لأشباه الفلزات المذكورة في الملاحظات؟",opts:[["B, Si, Ge, As, Sb, Te","B وSi وGe وAs وSb وTe"],["Na, K, Li","Na وK وLi"],["He, Ne, Ar","He وNe وAr"],["F, Cl, Br","F وCl وBr"]],a:0},
+{q:"What is the purpose of the staircase line in the periodic table?",ar:"ما وظيفة الخط المتدرّج في الجدول الدوري؟",opts:[["It separates metals from nonmetals, with metalloids near the line","يفصل الفلزات عن اللافلزات، وتوجد أشباه الفلزات بالقرب منه"],["It separates periods from groups","يفصل الدورات عن المجموعات"],["It marks the atomic number","يحدد العدد الذري"],["It identifies noble gases only","يحدد الغازات النبيلة فقط"]],a:0},
+{q:"Which elements belong to the s-block according to the notes?",ar:"أي عناصر تنتمي إلى قطاع s وفقًا للملاحظات؟",opts:[["Groups 1A–2A, plus He","المجموعتان 1A–2A بالإضافة إلى الهيليوم"],["Groups 3B–2B","المجموعات 3B–2B"],["Lanthanides and actinides only","اللانثانيدات والأكتينيدات فقط"],["Groups 3A–8A only","المجموعات 3A–8A فقط"]],a:0},
+{q:"The p-block is associated with which groups in the provided notes?",ar:"يرتبط قطاع p بأي مجموعات في الملاحظات المرفقة؟",opts:[["1A–2A","1A–2A"],["3A–8A","3A–8A"],["3B–2B","3B–2B"],["Only group 18","المجموعة 18 فقط"]],a:1},
+{q:"The f-block includes:",ar:"يشمل قطاع f:",opts:[["Alkali metals only","الفلزات القلوية فقط"],["Halogens and noble gases","الهالوجينات والغازات النبيلة"],["Lanthanides and actinides","اللانثانيدات والأكتينيدات"],["All nonmetals","جميع اللافلزات"]],a:2},
+{q:"Which statement about oxygen and sulfur is supported by the notes?",ar:"أي عبارة عن الأكسجين والكبريت تدعمها الملاحظات؟",opts:[["They have the same number of valence-shell electrons","لهما العدد نفسه من إلكترونات غلاف التكافؤ"],["They are both colorless gases at room temperature","كلاهما غاز عديم اللون في درجة حرارة الغرفة"],["They have the same atomic number","لهما العدد الذري نفسه"],["They belong to different groups because their valence electrons differ","ينتميان إلى مجموعتين مختلفتين لاختلاف إلكترونات التكافؤ"]],a:0}
+];
+let submitted=false;
+const quiz=document.getElementById('quiz');
+function render(){
+ quiz.innerHTML='';
+ questions.forEach((item,i)=>{
+  const card=document.createElement('section');card.className='question';card.id='q'+i;
+  card.innerHTML=`<div class="qnum">Question ${i+1} of ${questions.length}</div><h2>${item.q}<span class="ar">${item.ar}</span></h2><div class="options">${item.opts.map((o,j)=>`<label class="option" data-q="${i}" data-o="${j}"><input type="radio" name="q${i}" value="${j}" ${submitted?'disabled':''}><span class="txt">${String.fromCharCode(65+j)}. ${o[0]}<span class="ar">${o[1]}</span></span></label>`).join('')}</div><div class="explain" style="display:none;margin-top:10px;font-size:.9rem"></div>`;
+  quiz.appendChild(card);
+ });
+ quiz.querySelectorAll('input[type=radio]').forEach(el=>el.addEventListener('change',updateProgress));
+}
+function updateProgress(){const n=questions.filter((q,i)=>document.querySelector(`input[name=q${i}]:checked`)).length;document.getElementById('count').textContent=`${n} / ${questions.length} answered`;document.getElementById('bar').style.width=(n/questions.length*100)+'%';}
+document.getElementById('submit').addEventListener('click',()=>{
+ if(submitted)return;
+ const answered=questions.filter((q,i)=>document.querySelector(`input[name=q${i}]:checked`)).length;
+ if(answered<questions.length){if(!confirm(`You answered ${answered} of ${questions.length} questions. Submit anyway?\nأجبت عن ${answered} من ${questions.length}. هل تريد التسليم؟`))return;}
+ submitted=true;let score=0;
+ questions.forEach((q,i)=>{
+  const chosen=document.querySelector(`input[name=q${i}]:checked`);const card=document.getElementById('q'+i);
+  card.querySelectorAll('.option').forEach((label,j)=>{label.querySelector('input').disabled=true;if(j===q.a)label.classList.add('correct');if(chosen&&Number(chosen.value)===j&&j!==q.a)label.classList.add('incorrect');});
+  if(chosen&&Number(chosen.value)===q.a)score++;
+  const exp=card.querySelector('.explain');exp.style.display='block';exp.style.color='var(--muted)';exp.innerHTML=`Correct answer: <strong>${String.fromCharCode(65+q.a)}. ${q.opts[q.a][0]}</strong><span class="ar">الإجابة الصحيحة: ${q.opts[q.a][1]}</span>`;
+ });
+ const result=document.getElementById('result');result.style.display='block';result.innerHTML=`<div class="qnum">Your result · نتيجتك</div><div class="score">${score} / ${questions.length}</div><h2>${score>=13?'Excellent work!':score>=10?'Good job!':'Keep practicing!'}</h2><p class="note">You scored ${Math.round(score/questions.length*100)}%.</p><p class="ar" style="text-align:center">تم إظهار الإجابات الصحيحة ومراجعة كل سؤال. ${score>=13?'ممتاز!':score>=10?'أداء جيد، كمّل مراجعة.':'راجع الأسئلة وحاول مرة تانية.'}</p>`;
+ document.getElementById('submit').disabled=true;result.scrollIntoView({behavior:'smooth',block:'center'});
+});
+document.getElementById('reset').addEventListener('click',()=>{submitted=false;document.getElementById('submit').disabled=false;document.getElementById('result').style.display='none';render();updateProgress();window.scrollTo({top:0,behavior:'smooth'});});
+render();updateProgress();
+</script>
+</body>
+</html>
